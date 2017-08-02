@@ -21,8 +21,8 @@ def readLorentzVector(Pileup):
   
   #Save file parameter
   #str_save="plots/new/release/001/1599/"
-  #str_save = "tmp/"
-  str_save="plot_HSCPLGW25_noise_BgPU0/"
+  str_save = "tmp/"
+  #str_save="plot_HSCPLGW25_noise_BgPU0/"
   #str_save = "plot_NOnoise_noPU/"
   #str_save="plots/new/Go"
   #str_save="plots/HSCP_old_NoPU/"
@@ -153,8 +153,8 @@ def readLorentzVector(Pileup):
           
           if abs(event.rpcHit_z[i])<1000 and abs(event.rpcHit_z[i])>900 and selection:
                tr1=event.rpcHit_time[i]-(math.sqrt(event.rpcHit_y[i]**2+event.rpcHit_x[i]**2+event.rpcHit_z[i]**2)-r011)/SpeedOfLight
-               #using TVector3
-               RE31.append( ROOT.TVector3( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i] ) )
+               #using TLorentzVector
+               RE31.append( ROOT.TLorentzVector( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i], event.rpcHit_time[i]) )
                #geometry
                if event.rpcHit_z[i] > 0: 
                  fakeRE31_plus.append(i)
@@ -162,8 +162,8 @@ def readLorentzVector(Pileup):
                  fakeRE31_minus.append(i)
 
           elif abs(event.rpcHit_z[i])>1000 and selection:
-               #using TVector3
-               RE41.append( ROOT.TVector3( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i] ) )
+               #using TLorentzVector
+               RE41.append( ROOT.TLorentzVector( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i], event.rpcHit_time[i] ) )
                #geometry
                if event.rpcHit_z[i] > 0:
                  fakeRE41_plus.append(i)
@@ -177,9 +177,9 @@ def readLorentzVector(Pileup):
 
       for i in range(ngem):
         if event.gemSegment_z[i] < 700:
-          GE11.append( ROOT.TVector3( event.gemSegment_x[i], event.gemSegment_y[i], event.gemSegment_z[i] ) )
+          GE11.append( ROOT.TLorentzVector( event.gemSegment_x[i], event.gemSegment_y[i], event.gemSegment_z[i], event.gemSegment_time[i] ) )
         else:
-          GE21.append( ROOT.TVector3( event.gemSegment_x[i], event.gemSegment_y[i], event.gemSegment_z[i] ) )
+          GE21.append( ROOT.TLorentzVector( event.gemSegment_x[i], event.gemSegment_y[i], event.gemSegment_z[i], event.gemSegment_time[i] ) )
 
       nRE31 = len(RE31)
       nRE41 = len(RE41)
@@ -202,6 +202,7 @@ def readLorentzVector(Pileup):
           if tmp_dR < dR_GE21_RE31:
             dR_GE21_RE31 = tmp_dR
 
+
       #print "dR = " , dR_GE11_RE31, " " , dR_GE21_RE31
 
       HistL[12].Fill( dR_GE11_RE31 )
@@ -215,66 +216,36 @@ def readLorentzVector(Pileup):
       l41_plus=len(fakeRE41_plus)
       l41_minus=len(fakeRE41_minus)
 
-      phij = 0;
-      phii = 0;
-      etaj = 0;
-      etai = 0;
-      dphi = 0;
-      deta = 0;
+      phij = -9;
+      phii = -9;
+      etaj = -9;
+      etai = -9;
+      dphi = -9;
+      deta = -9;
 
-      noFilledChi = 1
-      noFilledChi_select = 1
+      for i in range(nRE31):
+        for j in range(nRE41):
+          tr1 = RE31[i].T() - (RE31[i].P()-r012)/SpeedOfLight
+          tr2 = RE41[j].T() - (RE41[j].P()-r012)/SpeedOfLight
+          dphi = RE41[0].DeltaPhi( RE31[0] )
+          deta = RE31[0].Eta() - RE41[0].Eta() 
+ 
+          dt=tr2-tr1
+          HistL[4].Fill(dt)
 
-      for i in range(l31_plus):
-        for j in range(l41_plus):
-          ii = fakeRE31_plus[i]
-          jj = fakeRE41_plus[j]
-          tr1=event.rpcHit_time[ii]-(math.sqrt(event.rpcHit_y[ii]**2+event.rpcHit_x[ii]**2+event.rpcHit_z[ii]**2)-r012)/SpeedOfLight
-          tr2=event.rpcHit_time[jj]-(math.sqrt(event.rpcHit_y[jj]**2+event.rpcHit_x[jj]**2+event.rpcHit_z[jj]**2)-r012)/SpeedOfLight
+          chi=tr2**2+tr1**2
 
-          xi = event.rpcHit_x[ii]
-          xj = event.rpcHit_x[jj]
+          HistL[5].Fill(chi)
+          HistL[7].Fill(dphi)
+          HistL[8].Fill(deta)
 
-          yi = event.rpcHit_y[ii]
-          yj = event.rpcHit_y[jj]
-
-          zi = event.rpcHit_z[ii]
-          zj = event.rpcHit_z[jj]
-
-          ri = sqrt(xi*xi+yi*yi)
-          rj = sqrt(xj*xj+yj*yj)
-
-          phii = atan2(yi, xi)
-          phij = atan2(yj, xj)
-
-          etai = - log(tan(atan2(ri, zi)/2))
-          etaj = - log(tan(atan2(rj, zj)/2))
-      
-          dphi = phij-phii
-          if dphi >= math.pi:
-            dphi = dphi - 2*math.pi
-          if dphi < (-1)*(math.pi):
-            dphi = dphi + 2*math.pi
-
-          dphi = dphi
-          #dphi = RE41[0].DeltaPhi( RE31[0] )
-          #dphi = abs(dphi)
-          deta = etai-etaj
-
-          if tr1 and tr2:
-            dt=tr2-tr1
-            HistL[4].Fill(dt)
-            chi=tr2**2+tr1**2
-            if noFilledChi:
-              HistL[5].Fill(chi)
-              noFilledChi = 0
-#deta cut -> if HSCP_noPU = 0.1, if HSCPLGW25 = 0.05
-            if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05 and chi > 30:
-              if noFilledChi_select:
-                HistL[6].Fill(chi)
-                noFilledChi_select = 0
-
-      HistL[9].Fill(l31_plus*l41_plus)
+          if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05 and chi > 30: #deta cut -> if HSCP_noPU = 0.1, if HSCPLGW25 = 0.05
+            HistL[6].Fill(chi)
+            break
+          else: 
+            break
+ 
+      HistL[9].Fill(nRE31*nRE41)
 
       if t01:
         HistL[0].Fill(t01)
@@ -302,15 +273,6 @@ def readLorentzVector(Pileup):
 #        HistL[5].Fill(chi)
 #        if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05:
 #          HistL[6].Fill(chi)
-
-      if Pileup:
-        if dphi and deta and l31_plus > 0 and l41_plus > 0:
-          HistL[7].Fill(dphi)
-          HistL[8].Fill(deta)
-      else
-        if dphi and deta and l31_plus > 0 and l41_plus > 0 and l31_plus == 1 and l41_plus == 1:
-          HistL[7].Fill(dphi)
-          HistL[8].Fill(deta)
 
     print counter   
 
