@@ -146,7 +146,10 @@ def readLorentzVector(Pileup):
           if Pileup:
                selection = (not isWithinTheCone(event.rpcHit_x[i],event.rpcHit_y[i],event.rpcHit_z[i],pos11) ) and (not isWithinTheCone(event.rpcHit_x[i],event.rpcHit_y[i],event.rpcHit_z[i],pos21) )
           else:
-               selection = findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos11,pos21)
+               if abs(event.rpcHit_z[i])<1000 and abs(event.rpcHit_z[i])>900:
+                 selection = findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos11,pos21)
+               elif abs(event.rpcHit_z[i])>1000:
+                 selection = findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos12,pos22)
           
           if abs(event.rpcHit_z[i])<1000 and abs(event.rpcHit_z[i])>900 and selection:
                tr1=event.rpcHit_time[i]-(math.sqrt(event.rpcHit_y[i]**2+event.rpcHit_x[i]**2+event.rpcHit_z[i]**2)-r011)/SpeedOfLight
@@ -300,9 +303,14 @@ def readLorentzVector(Pileup):
 #        if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05:
 #          HistL[6].Fill(chi)
 
-      if dphi and deta and l31_plus > 0 and l41_plus > 0 and l31_plus == 1 and l41_plus == 1:
-        HistL[7].Fill(dphi)
-        HistL[8].Fill(deta)
+      if Pileup:
+        if dphi and deta and l31_plus > 0 and l41_plus > 0:
+          HistL[7].Fill(dphi)
+          HistL[8].Fill(deta)
+      else
+        if dphi and deta and l31_plus > 0 and l41_plus > 0 and l31_plus == 1 and l41_plus == 1:
+          HistL[7].Fill(dphi)
+          HistL[8].Fill(deta)
 
     print counter   
 
