@@ -21,8 +21,8 @@ def readLorentzVector(Pileup):
   
   #Save file parameter
   #str_save="plots/new/release/001/1599/"
-  str_save = "tmp/"
-  #str_save="plot_HSCPLGW25_noise_BgPU0/"
+  #str_save = "tmp/"
+  str_save="plot_HSCPLGW25_noise_BgPU0/"
   #str_save = "plot_NOnoise_noPU/"
   #str_save="plots/new/Go"
   #str_save="plots/HSCP_old_NoPU/"
@@ -283,7 +283,7 @@ def readLorentzVector(Pileup):
   print "doing Muons"
   timePlots(mychain2,cseriousHistL,Min,Max, Pileup )
   
-  print " All noise ", cseriousHistL[5].Integral(), " after cuts ", cseriousHistL[6].Integral()
+#  print " All noise ", cseriousHistL[5].Integral(), " after cuts ", cseriousHistL[6].Integral()
 
   print (Min, Max)
   #print ("muons :",cMin, cMax)
@@ -353,6 +353,12 @@ def readLorentzVector(Pileup):
   legend.Draw() 
   c1.SaveAs(str_save+"timeMuonsSecond"+str_form)
 
+
+  background_name = "Muon"
+  if Pileup:
+    background_name = "PileUp"
+
+
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[4].SetLineColor(ROOT.kRed)
@@ -364,17 +370,14 @@ def readLorentzVector(Pileup):
   cseriousHistL[4].SetTitle('Difference between second and first chamber')
   seriousHistL[4].SetLineColor(ROOT.kBlue)
   seriousHistL[4].SetLineStyle(1)
-
+  print "timeDiff >> Number of ", background_name, " : ", cseriousHistL[4].Integral()
+  print "timeDiff >> Number of HSCP : ", seriousHistL[4].Integral()
 
   norm_mu = cseriousHistL[4].Integral()  # MG normalize to unity
   cseriousHistL[4].Scale(1./norm_mu)  # MG normalize to unity
   norm_hscp = seriousHistL[4].Integral()  # MG normalize to unity
   seriousHistL[4].Scale(1./norm_hscp)  # MG normalize to unity
 
-  background_name = "Muon"
-  if Pileup:
-    background_name = "PileUp"
- 
   cseriousHistL[4].Draw("HIST")
   seriousHistL[4].Draw("SAME HIST")
   legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
@@ -400,13 +403,13 @@ def readLorentzVector(Pileup):
   cseriousHistL[5].GetYaxis().SetTitleOffset(1.2)
   cseriousHistL[5].SetTitle('Square sum of second and first chamber')
 
-  print "Number of Muon before cut : ",cseriousHistL[5].GetEntries()
+  print "chi2 >> Number of ", background_name," before cut : ",cseriousHistL[5].Integral()
+  print "chi2 >> Number of HSCP before cut : ", seriousHistL[5].Integral()
 
   norm_mu = cseriousHistL[5].Integral()  # MG normalize to unity
   cseriousHistL[5].Scale(1./norm_mu)  # MG normalize to unity
   norm_hscp = seriousHistL[5].Integral()  # MG normalize to unity
   seriousHistL[5].Scale(1./norm_hscp)  # MG normalize to unity
-
 
 
   cseriousHistL[5].Draw("HIST")
@@ -427,12 +430,15 @@ def readLorentzVector(Pileup):
   cseriousHistL[6].SetTitle('Square sum of second and first chamber for positive propagation')
   cseriousHistL[6].SetLineStyle(2)
   seriousHistL[6].SetLineStyle(1)
-  print "Number of Muon Aftere cut : ",cseriousHistL[6].GetEntries()
+  print "chi2 >> Number of", background_name, " Aftere cut(chi2>30) : ",cseriousHistL[6].Integral()
+  print "chi2 >> Number of HSCP  Aftere cut(chi2>30) : ",seriousHistL[6].Integral()
+  norm_mu = cseriousHistL[6].Integral()
   cseriousHistL[6].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[6].Draw("HIST")
   cseriousHistL[6].SetMaximum(0.06)
 
   seriousHistL[6].SetLineColor(ROOT.kBlue)
+  norm_hscp = seriousHistL[6].Integral()
   seriousHistL[6].Scale(1./norm_hscp)  # MG normalize to unity
   seriousHistL[6].Draw("SAME HIST")
   legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
@@ -450,11 +456,15 @@ def readLorentzVector(Pileup):
   cseriousHistL[7].SetTitle('Angle between second and first chamber for positive propagation')
   cseriousHistL[7].SetLineStyle(2)
   seriousHistL[7].SetLineStyle(1)
+  print "dphi >> Number of ",background_name," : ", cseriousHistL[7].Integral()
+  print "dphi >> Number of HSCP : ", seriousHistL[7].Integral()
+  norm_mu = cseriousHistL[7].Integral()
   cseriousHistL[7].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[7].Draw("HIST")
   cseriousHistL[7].SetMaximum(0.27)
 
   seriousHistL[7].SetLineColor(ROOT.kBlue)
+  norm_hscp = seriousHistL[7].Integral()
   seriousHistL[7].Scale(1./norm_hscp)  # MG normalize to unity
   seriousHistL[7].Draw("SAME HIST")
   legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
@@ -476,6 +486,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[8].SetTitle('Angle between second and first chamber for positive propagation')
   cseriousHistL[8].SetLineStyle(2)
   seriousHistL[8].SetLineStyle(1)
+  print "deta >> Number of ",background_name," : ", cseriousHistL[8].Integral()
+  print "deta >> Number of HSCP : ", seriousHistL[8].Integral()
+  norm_mu = cseriousHistL[8].Integral()
+  norm_hscp = seriousHistL[8].Integral()
   cseriousHistL[8].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[8].Draw("HIST")
   cseriousHistL[8].SetMaximum(0.27)
@@ -494,10 +508,9 @@ def readLorentzVector(Pileup):
   #line2 = ROOT.TLine(0.05,0,0.05,50)
   line2.Draw()
 
-  print seriousHistL[8].GetEntries()
-
   c1.SaveAs(str_save+"deta_pos"+str_form)
 
+  
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[9].SetLineColor(ROOT.kRed)
@@ -505,6 +518,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[9].GetYaxis().SetTitle('Number of Particles')
   cseriousHistL[9].GetYaxis().SetTitleOffset(1.2)
   cseriousHistL[9].SetTitle('Npairs')
+  print "Npairs >> Number of ",background_name," : ", cseriousHistL[9].Integral()
+  print "Npairs >> Number of HSCP : ", seriousHistL[9].Integral()
+  norm_mu = cseriousHistL[9].Integral()
+  norm_hscp = seriousHistL[9].Integral()
   cseriousHistL[9].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[9].Draw("HIST")
 #  cseriousHistL[9].SetMaximum(1)
@@ -518,9 +535,6 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[9],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"npairs"+str_form)
-
-
-
 
 
   c1=ROOT.TCanvas()
@@ -551,7 +565,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[12].GetXaxis().SetTitle('dR between GE11 and RE31')
   cseriousHistL[12].GetYaxis().SetTitle('Number of Particles')
 #  cseriousHistL[12].SetTitle('Npairs')
-  print "Number of Muon after GEM11 cut : ",cseriousHistL[12].GetEntries()
+  print "GEM11 >> Number of ",background_name,"after GEM11 cut : ", cseriousHistL[12].Integral()
+  print "GEM11 >> Number of HSCP after GEM11 cut : ", seriousHistL[12].Integral()
+  norm_mu = cseriousHistL[12].Integral()
+  norm_hscp = seriousHistL[12].Integral()
   cseriousHistL[12].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[12].Draw("HIST")
   cseriousHistL[12].SetMaximum(1)
@@ -559,7 +576,8 @@ def readLorentzVector(Pileup):
 
   seriousHistL[12].SetLineColor(ROOT.kBlue)
   seriousHistL[12].SetLineStyle(1)
-  seriousHistL[12].Scale(1./norm_hscp)  # MG normalize to unity
+  if not norm_hscp == 0:
+    seriousHistL[12].Scale(1./norm_hscp)  # MG normalize to unity
   seriousHistL[12].Draw("SAME HIST")
   legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
   legend.AddEntry(cseriousHistL[12],background_name,"l")
@@ -573,7 +591,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[13].GetXaxis().SetTitle('dR between GE21 and RE31')
   cseriousHistL[13].GetYaxis().SetTitle('Number of Particles')
 #  cseriousHistL[13].SetTitle('Npairs')
-  print "Number of Muon after GEM21 cut : ",cseriousHistL[13].GetEntries()
+  print "GEM21 >> Number of ",background_name,"after GEM21 cut : ", cseriousHistL[13].Integral()
+  print "GEM21 >> Number of HSCP after GEM21 cut : ", seriousHistL[13].Integral()
+  norm_mu = cseriousHistL[13].Integral()
+  norm_hscp = seriousHistL[13].Integral()
   cseriousHistL[13].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[13].Draw("HIST")
   cseriousHistL[13].SetMaximum(1)
@@ -581,7 +602,8 @@ def readLorentzVector(Pileup):
 
   seriousHistL[13].SetLineColor(ROOT.kBlue)
   seriousHistL[13].SetLineStyle(1)
-  seriousHistL[13].Scale(1./norm_hscp)  # MG normalize to unity
+  if not norm_hscp == 0:
+    seriousHistL[13].Scale(1./norm_hscp)  # MG normalize to unity
   seriousHistL[13].Draw("SAME HIST")
   legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
   legend.AddEntry(cseriousHistL[13],background_name,"l")
