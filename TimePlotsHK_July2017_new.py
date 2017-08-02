@@ -22,8 +22,8 @@ def readLorentzVector(Pileup):
   #Save file parameter
   #str_save="plots/new/release/001/1599/"
   #str_save = "tmp/"
-  #str_save="plot_HSCPLGW25_noise_BgPU0/"
-  str_save = "plot_NOnoise_noPU/"
+  str_save="plot_HSCPLGW25_noise_BgPU0/"
+  #str_save = "plot_NOnoise_noPU/"
   #str_save="plots/new/Go"
   #str_save="plots/HSCP_old_NoPU/"
   #str_save="plots/910pre3/"
@@ -260,6 +260,7 @@ def readLorentzVector(Pileup):
 
           if tr1 and tr2:
             dt=tr2-tr1
+            HistL[4].Fill(dt)
             chi=tr2**2+tr1**2
             if noFilledChi:
               HistL[5].Fill(chi)
@@ -288,17 +289,17 @@ def readLorentzVector(Pileup):
         HistL[3].Fill(tr2)
         if tr2<Min[3]:Min[3]=tr2
         elif tr2>Max[3]:Max[3]=tr2
-'''
-      if tr1 and tr2:
-        dt=tr2-tr1
-        HistL[4].Fill(dt)
-        if dt<Min[4]:Min[4]=dt
-        elif dt>Max[4]:Max[4]=dt
-        chi=tr2**2+tr1**2
-        HistL[5].Fill(chi)
-        if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05:
-          HistL[6].Fill(chi)
-'''
+
+#      if tr1 and tr2:
+#        dt=tr2-tr1
+#        HistL[4].Fill(dt)
+#        if dt<Min[4]:Min[4]=dt
+#        elif dt>Max[4]:Max[4]=dt
+#        chi=tr2**2+tr1**2
+#        HistL[5].Fill(chi)
+#        if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05:
+#          HistL[6].Fill(chi)
+
       if dphi and deta and l31_plus > 0 and l41_plus > 0 and l31_plus == 1 and l41_plus == 1:
         HistL[7].Fill(dphi)
         HistL[8].Fill(deta)
@@ -459,6 +460,7 @@ def readLorentzVector(Pileup):
   print "Number of Muon Aftere cut : ",cseriousHistL[6].GetEntries()
   cseriousHistL[6].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[6].Draw("HIST")
+  cseriousHistL[6].SetMaximum(0.06)
 
   seriousHistL[6].SetLineColor(ROOT.kBlue)
   seriousHistL[6].Scale(1./norm_hscp)  # MG normalize to unity
@@ -704,9 +706,9 @@ def readLorentzVector(Pileup):
   propHist_pos.Draw("SAMEPE")
 
 
-  legend = ROOT.TLegend(0.13,0.70,0.55,0.87)
+  legend = ROOT.TLegend(0.13,0.70,0.60,0.87)
   legend.AddEntry(propHist,"chi2 discri","p")
-  legend.AddEntry(propHist_pos,"chi2 + (dT > -5 ns & |dphi| < 0.005 & |deta| < 0.05)","p")
+  legend.AddEntry(propHist_pos,"chi2 + (dT > -5 ns & |dphi| < 0.005 & |deta| < 0.05) & chi2 > 30","p")
   legend.Draw() 
 
   c1.SetLogy()
