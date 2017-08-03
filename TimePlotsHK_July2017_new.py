@@ -73,6 +73,10 @@ def readLorentzVector(Pileup):
   HSCPmass = 0
   def timePlots (chain,HistL,Min,Max, Pileup = False):
     counter =0 
+    counter_pre = 0
+    counter_step1 = 0
+    counter_step2 = 0
+    counter_step3 = 0
 
     for event in chain:
 
@@ -223,6 +227,8 @@ def readLorentzVector(Pileup):
       dphi = -9;
       deta = -9;
 
+      FoundPair = False
+
       for i in range(nRE31):
         for j in range(nRE41):
           tr1 = RE31[i].T() - (RE31[i].P()-r012)/SpeedOfLight
@@ -239,12 +245,28 @@ def readLorentzVector(Pileup):
           HistL[7].Fill(dphi)
           HistL[8].Fill(deta)
 
-          if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05 and chi > 30: #deta cut -> if HSCP_noPU = 0.1, if HSCPLGW25 = 0.05
+          counter_pre = counter_pre + 1 
+          step1 = abs(dphi) < 0.005 and abs(deta) < 0.05 and chi > 30 #deta cut -> if HSCP_noPU = 0.1, if HSCPLGW25 = 0.05
+          step2 = dR_GE11_RE31 < 0.2 and dR_GE21_RE31 and step1
+          if dR_GE11_RE31 > 8:
+            step2 = dR_GE21_RE31 and step1
+          step3 = dt > -5 and step2
+
+          if step1:
+            counter_step1 = counter_step1 + 1
+
+          if step2:
+            counter_step2 = counter_step2 + 1
+
+          if step3: 
+            counter_step3 = counter_step3 + 1
             HistL[6].Fill(chi)
-            break
-          else: 
-            break
- 
+
+          FoundPair = True
+          break
+        if FoundPair:
+          break
+
       HistL[9].Fill(nRE31*nRE41)
 
       if t01:
@@ -274,7 +296,12 @@ def readLorentzVector(Pileup):
 #        if dt > -5 and abs(dphi) < 0.005 and abs(deta) < 0.05:
 #          HistL[6].Fill(chi)
 
-    print counter   
+    print "total = ", counter   
+    print "foundpair = ", counter_pre
+    print "step1 = ", counter_step1
+    print "step2 = ", counter_step2
+    print "step3 = ", counter_step3
+   
 
 
   print "doing HSCP"
