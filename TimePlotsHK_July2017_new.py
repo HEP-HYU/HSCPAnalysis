@@ -33,32 +33,74 @@ def readLorentzVector(Pileup):
   c1=ROOT.TCanvas()
   seriousHistL=[]
   cseriousHistL=[]
-  sRange=[[-10,100],[-10,100],[-10,100],[-10,100],[-35,85],[-10,200],[-10,200],[-0.011,0.011],[-0.2,0.2], [0,10], [8, 13], [8, 13], [0, 3], [0, 3]]*3
-  numBin=[     50,      50,        50,      50,        50,      50,      50,          100,          100,       50,     50,      50,     100,      100]
-  for i in range(14):
-    s="seriousHist"+str(i)
-    sc="cseriousHist"+str(i)
-    seriousHistL.append(ROOT.TH1F(s,"placeholder",numBin[i],sRange[i][0],sRange[i][1]))
-    cseriousHistL.append(ROOT.TH1F(sc,"placeholder",numBin[i],sRange[i][0],sRange[i][1]))
 
-  s="seriousHist14"
-  sc="cseriousHist14"
-  seriousHistL.append(ROOT.TH2F(s,"placeholder",200,900,1100, 200, 200, 400))
-  cseriousHistL.append(ROOT.TH2F(sc,"placeholder",200,900,1100, 200, 200, 400))
+  seriousHistL.append(ROOT.TH1F("seriousHist0"  ,"placeholder", 50, -10, 100))  
+  seriousHistL.append(ROOT.TH1F("seriousHist1"  ,"placeholder", 50, -10, 100))  
+  seriousHistL.append(ROOT.TH1F("seriousHist2"  ,"placeholder", 50, -10, 100))  
+  seriousHistL.append(ROOT.TH1F("seriousHist3"  ,"placeholder", 50, -10, 100))  
+  seriousHistL.append(ROOT.TH1F("seriousHist4"  ,"placeholder", 50, -35, 85))  
+  seriousHistL.append(ROOT.TH1F("seriousHist5"  ,"placeholder", 50, -10, 200))  
+  seriousHistL.append(ROOT.TH1F("seriousHist6"  ,"placeholder", 50, -10, 200))  
+  seriousHistL.append(ROOT.TH1F("seriousHist7"  ,"placeholder", 100, -0.011, 0.011))  
+  seriousHistL.append(ROOT.TH1F("seriousHist8"  ,"placeholder", 100, -0.2, 0.2))  
+  seriousHistL.append(ROOT.TH1F("seriousHist9"  ,"placeholder", 50, 0, 10))  
+  seriousHistL.append(ROOT.TH1F("seriousHist10"  ,"placeholder", 50, 8, 13))  
+  seriousHistL.append(ROOT.TH1F("seriousHist11"  ,"placeholder", 50, 8, 13))  
+  seriousHistL.append(ROOT.TH1F("seriousHist12"  ,"placeholder", 100, 0, 3))  
+  seriousHistL.append(ROOT.TH1F("seriousHist13"  ,"placeholder", 100, 0, 3))  
+  seriousHistL.append(ROOT.TH2F("seriousHist14","placeholder",200,900,1100, 200, 200, 400))
+  seriousHistL.append(ROOT.TH2F("seriousHist15","placeholder",200, 200, 400, 200, 200, 400))
+  seriousHistL.append(ROOT.TH1F("seriousHist16","dR between rechit and simdigi1",100, 0, 1))
+  seriousHistL.append(ROOT.TH1F("seriousHist17","dR between rechit and simdigi2",100, 0, 1))
 
-  s="seriousHist15"
-  sc="cseriousHist15"
-  seriousHistL.append(ROOT.TH2F(s,"placeholder",200, 200, 400, 200, 200, 400))
-  cseriousHistL.append(ROOT.TH2F(sc,"placeholder",200, 200, 400, 200, 200, 400))
-  
-
-
+  cseriousHistL.append(ROOT.TH1F("cseriousHist0"  ,"placeholder", 50, -10, 100))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist1"  ,"placeholder", 50, -10, 100))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist2"  ,"placeholder", 50, -10, 100))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist3"  ,"placeholder", 50, -10, 100))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist4"  ,"placeholder", 50, -35, 85))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist5"  ,"placeholder", 50, -10, 200))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist6"  ,"placeholder", 50, -10, 200))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist7"  ,"placeholder", 100, -0.011, 0.011))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist8"  ,"placeholder", 100, -0.2, 0.2))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist9"  ,"placeholder", 50, 0, 10))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist10"  ,"placeholder", 50, 8, 13))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist11"  ,"placeholder", 50, 8, 13))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist12"  ,"placeholder", 100, 0, 3))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist13"  ,"placeholder", 100, 0, 3))
+  cseriousHistL.append(ROOT.TH2F("cseriousHist14","placeholder",200,900,1100, 200, 200, 400))
+  cseriousHistL.append(ROOT.TH2F("cseriousHist15","placeholder",200, 200, 400, 200, 200, 400))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist16","dR between rechit and simdigi1",100, 0, 1))
+  cseriousHistL.append(ROOT.TH1F("cseriousHist17","dR between rechit and simdigi2",100, 0, 1))
+ 
   def findClosestDigi (x, y, z, pos1, pos2) :
     return (x-pos1[0])**2+(y-pos1[1])**2+(z-pos1[2])**2<(x-pos2[0])**2+(y-pos2[1])**2+(z-pos2[2])**2
 
-
   def isWithinTheCone (x, y, z, pos1) :
     return sqrt((x-pos1[0])**2+(y-pos1[1])**2+(z-pos1[2])**2) < 100
+
+  def DrawCanvas( h1, cor1, l1, h2, cor2, l2, xtitle, ytitle, name, norm = False) :
+     c1=ROOT.TCanvas()
+     h1.SetLineColor(cor1)
+     gStyle.SetOptStat(0);
+     h1.GetXaxis().SetTitle(xtitle)
+     h1.GetYaxis().SetTitle(ytitle)
+     h1.GetYaxis().SetTitleOffset(1.2)
+     h1.SetTitle('')
+     h2.SetLineColor(cor2)
+     h1.SetLineWidth(2)
+     h2.SetLineWidth(2)
+     if norm:
+       h1.Scale(1.0/h1.Integral())
+       h2.Scale(1.0/h2.Integral())
+     h1.Draw("HIST")
+     h2.Draw("SAME HIST")
+     legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
+     legend.AddEntry(h1,l1,"l")
+     legend.AddEntry(h2,l2,"l")
+     legend.SetLineColor(0);
+     legend.SetFillColor(0);
+     legend.Draw()
+     c1.SaveAs(name)
 
            
   cMax=[-100000]*10
@@ -71,6 +113,7 @@ def readLorentzVector(Pileup):
   Min=[100000]*10
   global HSCPmass
   HSCPmass = 0
+
   def timePlots (chain,HistL,Min,Max, Pileup = False):
     counter =0 
     counter_pre = 0
@@ -85,6 +128,11 @@ def readLorentzVector(Pileup):
       m=len(event.rpcHit_isIRPC)
       ngem = event.gemSegment_n
 
+      simDigi1_RE31 = ROOT.TLorentzVector(0,0,0,0)
+      simDigi1_RE41 = ROOT.TLorentzVector(0,0,0,0)
+      simDigi2_RE31 = ROOT.TLorentzVector(0,0,0,0)
+      simDigi2_RE41 = ROOT.TLorentzVector(0,0,0,0)
+     
       pos11=(0,0,0)
       pos12=(0,0,0)
       pos21=(0,0,0)
@@ -98,7 +146,12 @@ def readLorentzVector(Pileup):
         if event.simDigi1_isIRPC[i]:
           if (abs(event.simDigi1_z[i])<1000 and abs(event.simDigi1_z[i])>900):
             pos11=(event.simDigi1_x[i],event.simDigi1_y[i],event.simDigi1_z[i])
+            simDigi1_RE31 = ROOT.TLorentzVector( event.simDigi1_x[i],event.simDigi1_y[i],event.simDigi1_z[i], event.simDigi1_tof[i] ) 
             r011 = (event.simDigi1_tof[i]- event.simDigi1_t0[i])*SpeedOfLight
+
+            HistL[10].Fill(r011/100.)
+            t01=(event.simDigi1_t0[i])
+
             # r011 can be fixed to 980 for preliminary noise study
 #            r = sqrt(event.simDigi1_x[i]*event.simDigi1_x[i] + event.simDigi1_y[i]*event.simDigi1_y[i])
             z = event.simDigi1_z[i]
@@ -107,7 +160,12 @@ def readLorentzVector(Pileup):
             HistL[12].Fill(z,r)
           elif abs(event.simDigi1_z[i])>1000 :
             pos12=(event.simDigi1_x[i],event.simDigi1_y[i],event.simDigi1_z[i])
+            simDigi1_RE41 = ROOT.TLorentzVector( event.simDigi1_x[i],event.simDigi1_y[i],event.simDigi1_z[i], event.simDigi1_tof[i] )
             r012 = (event.simDigi1_tof[i]- event.simDigi1_t0[i])*SpeedOfLight
+
+            HistL[11].Fill(r012/100.)
+            t02=(event.simDigi1_t0[i])
+
             # r012 can be fixed to 1070 for preliminary noise study
 #            z = event.simDigi1_z[i]
 #            r = math.sqrt(r011*r011 - z*z)
@@ -117,62 +175,45 @@ def readLorentzVector(Pileup):
         if event.simDigi2_isIRPC[i]:
           if (abs(event.simDigi2_z[i])<1000 and abs(event.simDigi2_z[i])>900):
             pos21=(event.simDigi2_x[i],event.simDigi2_y[i],event.simDigi2_z[i])
+            simDigi2_RE31 = ROOT.TLorentzVector( event.simDigi2_x[i],event.simDigi2_y[i],event.simDigi2_z[i], event.simDigi2_tof[i] )
             r021 = (event.simDigi2_tof[i]- event.simDigi2_t0[i])*SpeedOfLight
           elif abs(event.simDigi2_z[i])>1000 :
             pos22=(event.simDigi2_x[i],event.simDigi2_y[i],event.simDigi2_z[i])
+            simDigi2_RE41 = ROOT.TLorentzVector( event.simDigi2_x[i],event.simDigi2_y[i],event.simDigi2_z[i], event.simDigi2_tof[i] )
             r022 = (event.simDigi2_tof[i]- event.simDigi2_t0[i])*SpeedOfLight
 
       t01,t02,tr1,tr2,dt,chi=[0,0,0,0,0,0]
-      
-      #geometry
-      fakeRE31_plus = []
-      fakeRE41_plus = []
-      fakeRE31_minus = []
-      fakeRE41_minus = []
-
-      for i in range(n):
-        if event.simDigi1_isIRPC[i]:
-          if (abs(event.simDigi1_z[i])<1000 and abs(event.simDigi1_z[i])>900):
-#            print r011
-            HistL[10].Fill(r011/100.)
-            t01=(event.simDigi1_t0[i])
-          elif abs(event.simDigi1_z[i])>1000 :
-#            print r012
-            HistL[11].Fill(r012/100.)
-            t02=(event.simDigi1_t0[i])
-
+     
       RE31 = []
       RE41 = [] 
 
+      #### RPC hits ####
       for i in range(m):
         if event.rpcHit_isIRPC[i]:
+          tmpLorentzVector = ROOT.TLorentzVector( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i], event.rpcHit_time[i])
+
+          dR_digi1_RE31 = tmpLorentzVector.DeltaR( simDigi1_RE31 )
+          dR_digi2_RE31 = tmpLorentzVector.DeltaR( simDigi2_RE31 )
+          dR_digi1_RE41 = tmpLorentzVector.DeltaR( simDigi1_RE41 )
+          dR_digi2_RE41 = tmpLorentzVector.DeltaR( simDigi2_RE41 )
+
           selection = False
           if Pileup:
                selection = (not isWithinTheCone(event.rpcHit_x[i],event.rpcHit_y[i],event.rpcHit_z[i],pos11) ) and (not isWithinTheCone(event.rpcHit_x[i],event.rpcHit_y[i],event.rpcHit_z[i],pos21) )
           else:
                if abs(event.rpcHit_z[i])<1000 and abs(event.rpcHit_z[i])>900:
-                 selection = findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos11,pos21)
+                 HistL[16].Fill(dR_digi1_RE31)
+                 HistL[17].Fill(dR_digi2_RE31)
                elif abs(event.rpcHit_z[i])>1000:
-                 selection = findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos12,pos22)
+                 HistL[16].Fill(dR_digi1_RE41)  
+                 HistL[17].Fill(dR_digi2_RE41)  
+               selection = dR_digi1_RE31 < 0.1 or dR_digi2_RE31 < 0.1 or dR_digi1_RE41 < 0.1 or dR_digi2_RE41 < 0.1
+               #selection = findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos11,pos21) or findClosestDigi(event.rpcHit_x[i], event.rpcHit_y[i],event.rpcHit_z[i],pos12,pos22)
           
           if abs(event.rpcHit_z[i])<1000 and abs(event.rpcHit_z[i])>900 and selection:
-               tr1=event.rpcHit_time[i]-(math.sqrt(event.rpcHit_y[i]**2+event.rpcHit_x[i]**2+event.rpcHit_z[i]**2)-r011)/SpeedOfLight
-               #using TLorentzVector
                RE31.append( ROOT.TLorentzVector( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i], event.rpcHit_time[i]) )
-               #geometry
-               if event.rpcHit_z[i] > 0: 
-                 fakeRE31_plus.append(i)
-               else : 
-                 fakeRE31_minus.append(i)
-
           elif abs(event.rpcHit_z[i])>1000 and selection:
-               #using TLorentzVector
                RE41.append( ROOT.TLorentzVector( event.rpcHit_x[i], event.rpcHit_y[i], event.rpcHit_z[i], event.rpcHit_time[i] ) )
-               #geometry
-               if event.rpcHit_z[i] > 0:
-                 fakeRE41_plus.append(i)
-               else : 
-                 fakeRE41_minus.append(i) 
 
       ###### GEM association ######
 
@@ -213,19 +254,6 @@ def readLorentzVector(Pileup):
       HistL[13].Fill( dR_GE21_RE31 )
 
       ###############################
-
-      l31_plus=len(fakeRE31_plus)
-      l31_minus=len(fakeRE31_minus)
-
-      l41_plus=len(fakeRE41_plus)
-      l41_minus=len(fakeRE41_minus)
-
-      phij = -9;
-      phii = -9;
-      etaj = -9;
-      etai = -9;
-      dphi = -9;
-      deta = -9;
 
       FoundPair = False
 
@@ -669,17 +697,18 @@ def readLorentzVector(Pileup):
   legend.Draw()
   c1.SaveAs(str_save+"RE41"+str_form)
 
-
+  DrawCanvas( seriousHistL[16], ROOT.kBlue, "HSCP", cseriousHistL[16], ROOT.kRed, "Muons", "dR between rechit and simdigi1", "Entries", str_save+"dRsimdigi1"+str_form)
+  DrawCanvas( seriousHistL[17], ROOT.kBlue, "HSCP", cseriousHistL[17], ROOT.kRed, "Muons", "dR between rechit and simdigi2", "Entries", str_save+"dRsimdigi2"+str_form)
 
   c1=ROOT.TCanvas()
-  propHist=ROOT.TGraph(numBin[5])
+  propHist=ROOT.TGraph( seriousHistL[5].GetNbinsX() )
   n1 = seriousHistL[5].Integral()
   n2 = cseriousHistL[5].Integral()
  
   count1=n1
   count2=n2
   print("nentries hist5 :",n1,n2)
-  for q in range(numBin[5]):
+  for q in range( seriousHistL[5].GetNbinsX() ):
       count1-=seriousHistL[5].GetBinContent(q)
       count2-=cseriousHistL[5].GetBinContent(q)
       propHist.SetPoint(q,count1/n1,count2/n2)
@@ -687,7 +716,7 @@ def readLorentzVector(Pileup):
 
 # MG beggin: chi2 avec condition positive
 
-  propHist_pos=ROOT.TGraph(numBin[6])
+  propHist_pos=ROOT.TGraph( seriousHistL[6].GetNbinsX()   )
   n1_pos = seriousHistL[6].Integral()
   n2_pos = cseriousHistL[6].Integral()
 
@@ -695,7 +724,7 @@ def readLorentzVector(Pileup):
   count2=n2_pos
 
   print("nentries hist6 :",n1_pos,n2_pos)
-  for q in range(numBin[6]):
+  for q in range( seriousHistL[6].GetNbinsX()   ):
       count1-=seriousHistL[6].GetBinContent(q)
       count2-=cseriousHistL[6].GetBinContent(q)
       propHist_pos.SetPoint(q,count1/n1,count2/n2)
