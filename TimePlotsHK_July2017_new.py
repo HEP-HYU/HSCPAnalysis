@@ -7,6 +7,7 @@ from array import array
 from ROOT import gStyle
 #from rootpy.interactive import wait
 
+Pileup = False
 rndm = ROOT.TRandom(1)
 SpeedOfLight = 30
 
@@ -23,6 +24,7 @@ def readLorentzVector(Pileup):
   #str_save="plots/new/release/001/1599/"
   #str_save = "tmp/"
   str_save="plot_HSCPLGW25_noise_BgPU0/"
+  #str_save="plot_HSCPLGW25_noise_BgSNBMAPU200/"
   #str_save = "plot_NOnoise_noPU/"
   #str_save="plots/new/Go"
   #str_save="plots/HSCP_old_NoPU/"
@@ -78,29 +80,46 @@ def readLorentzVector(Pileup):
   def isWithinTheCone (x, y, z, pos1) :
     return sqrt((x-pos1[0])**2+(y-pos1[1])**2+(z-pos1[2])**2) < 100
 
-  def DrawCanvas( h1, cor1, l1, h2, cor2, l2, xtitle, ytitle, name, norm = False) :
+  def DrawCanvas( h1, cor1, l1, h2, cor2, l2, xtitle, ytitle, name, norm = True, PlotMin, PlotMax, LineX1, LineY1, LineX2, LineY2) :
+
+###h1 -> HSCP Histogram, h2 -> Muon(or PU) Histogram
      c1=ROOT.TCanvas()
      h1.SetLineColor(cor1)
      gStyle.SetOptStat(0);
-     h1.GetXaxis().SetTitle(xtitle)
-     h1.GetYaxis().SetTitle(ytitle)
-     h1.GetYaxis().SetTitleOffset(1.2)
-     h1.SetTitle('')
+     h2.GetXaxis().SetTitle(xtitle)
+     h2.GetYaxis().SetTitle(ytitle)
+     h2.GetYaxis().SetTitleOffset(1.2)
+     h2.SetTitle('')
      h2.SetLineColor(cor2)
+     h1.SetLineStyle(1)
+     h2.SetLineStyle(2)
      h1.SetLineWidth(2)
      h2.SetLineWidth(2)
      if norm:
-       h1.Scale(1.0/h1.Integral())
-       h2.Scale(1.0/h2.Integral())
-     h1.Draw("HIST")
-     h2.Draw("SAME HIST")
+       if not h1.Integral() == 0 :
+         h1.Scale(1.0/h1.Integral())
+       if not h2.Integral() == 0 :
+         h2.Scale(1.0/h2.Integral())
+     h2.Draw("HIST") #Muon(orPU)
+     if not PlotMin  -1.0 :
+       h2.SetMinimum(PlotMin)
+     if not PlotMax == -1.0 :
+       h2.SetMaximum(PlotMax)
      legend = ROOT.TLegend(0.67,0.70,0.87,0.87)
-     legend.AddEntry(h1,l1,"l")
+     if Pileup == False :
+       h1.Draw("SAME HIST") #HSCP
+       legend.AddEntry(h1,l1,"l")
      legend.AddEntry(h2,l2,"l")
      legend.SetLineColor(0);
      legend.SetFillColor(0);
      legend.Draw()
-     c1.SaveAs(name)
+     line1 = ROOT.TLine(LineX1, LineY1, LineX2, LineY2)
+     line2 = ROOT.TLine(-LineX1, LineY1, -LineX2, LineY2)
+     line1.Draw()
+     if (h1 == seriousHistL[7] or h1 == seriousHistL[8]) :
+       line2.Draw()
+#     c1.SaveAs(name)
+     c1.SaveAs(str_save+name+str_form)
 
            
   cMax=[-100000]*10
@@ -342,7 +361,7 @@ def readLorentzVector(Pileup):
 
   print (Min, Max)
   #print ("muons :",cMin, cMax)
-
+'''
   c1=ROOT.TCanvas()
   seriousHistL[0].SetLineColor(ROOT.kRed)
   gStyle.SetOptStat(0);
@@ -358,7 +377,10 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[2],"RPC_Hits","l")
   legend.Draw() 
   c1.SaveAs(str_save+"timeHSCPFirst"+str_form)
-
+'''
+  DrawCanvas(seriousHistL[2], ROOT.kBlue, "RPC_Hits", seriousHistL[0], ROOT.kRed, "Digital Hits", 'Time delay', 'Number of Particles', "timeHSCPFirst", False, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+  
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[0].SetLineColor(ROOT.kRed)
@@ -375,7 +397,11 @@ def readLorentzVector(Pileup):
   legend.Draw()
 #  Num_Muon1 = cseriousHist[]
   c1.SaveAs(str_save+"timeMuonsFirst"+str_form)
+'''
 
+  DrawCanvas(cseriousHistL[2], ROOT.kBlue, "RPC_Hits", cseriousHistL[0], ROOT.kRed, "Digital Hits", 'Time delay', 'Number of Particles', "timeMuonsFirst", False, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   seriousHistL[1].SetLineColor(ROOT.kRed)
@@ -391,7 +417,11 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[3],"RPC_Hits","l")
   legend.Draw() 
   c1.SaveAs(str_save+"timeHSCPSecond"+str_form)
+'''
 
+  DrawCanvas(seriousHistL[3], ROOT.kBlue, "RPC_Hits", seriousHistL[1], ROOT.kRed, "Digital Hits", 'Time delay', 'Number of Particles', "timeHSCPSecond", False, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[1].SetLineColor(ROOT.kRed)
@@ -407,13 +437,15 @@ def readLorentzVector(Pileup):
   legend.AddEntry(cseriousHistL[3],"RPC_Hits","l")
   legend.Draw() 
   c1.SaveAs(str_save+"timeMuonsSecond"+str_form)
+'''
 
+  DrawCanvas(cseriousHistL[3], ROOT.kBlue, "RPC_Hits", cseriousHistL[1], ROOT.kRed, "Digital Hits", 'Time delay', 'Number of Particles', "timeMuonsSecond", False, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
 
   background_name = "Muon"
   if Pileup:
     background_name = "PileUp"
 
-
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[4].SetLineColor(ROOT.kRed)
@@ -425,9 +457,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[4].SetTitle('Difference between second and first chamber')
   seriousHistL[4].SetLineColor(ROOT.kBlue)
   seriousHistL[4].SetLineStyle(1)
+'''  
   print "timeDiff >> Number of ", background_name, " : ", cseriousHistL[4].Integral()
   print "timeDiff >> Number of HSCP : ", seriousHistL[4].Integral()
-
+'''
   norm_mu = cseriousHistL[4].Integral()  # MG normalize to unity
   cseriousHistL[4].Scale(1./norm_mu)  # MG normalize to unity
   norm_hscp = seriousHistL[4].Integral()  # MG normalize to unity
@@ -446,7 +479,14 @@ def readLorentzVector(Pileup):
   #cseriousHistL[4].SetMaximum(0.3)
 
   c1.SaveAs(str_save+"timeDiff"+str_form)
+'''
+  if Pileup == False :
+    timeDiff_Y2 = 0.56
+  else :
+    timeDiff_Y2 = 0.14
+  DrawCanvas(seriousHistL[4], ROOT.kBlue, "HSCP", cseriousHistL[4], ROOT.kRed, background_name, 'Time delay difference', 'Number of Particles', "timeDiff", True, 0.0, 0.15, -5.0, 0.0, -5.0, timeDiff_Y2)
 
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[5].SetLineColor(ROOT.kRed)
@@ -457,10 +497,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[5].GetYaxis().SetTitle('Number of Particles')
   cseriousHistL[5].GetYaxis().SetTitleOffset(1.2)
   cseriousHistL[5].SetTitle('Square sum of second and first chamber')
-
+'''
   print "chi2 >> Number of ", background_name," before cut : ",cseriousHistL[5].Integral()
   print "chi2 >> Number of HSCP before cut : ", seriousHistL[5].Integral()
-
+'''
   norm_mu = cseriousHistL[5].Integral()  # MG normalize to unity
   cseriousHistL[5].Scale(1./norm_mu)  # MG normalize to unity
   norm_hscp = seriousHistL[5].Integral()  # MG normalize to unity
@@ -474,8 +514,9 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[4],"HSCP","l")
   legend.Draw() 
   c1.SaveAs(str_save+"timeChi"+str_form)
-
-
+'''
+  DrawCanvas(seriousHistL[5], ROOT.kBlue, "HSCP", cseriousHistL[5], ROOT.kRed, background_name, r'$\Chi^2$', 'Number of Particles', "timeChi", True, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[6].SetLineColor(ROOT.kRed)
@@ -485,8 +526,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[6].SetTitle('Square sum of second and first chamber for positive propagation')
   cseriousHistL[6].SetLineStyle(2)
   seriousHistL[6].SetLineStyle(1)
+'''  
   print "chi2 >> Number of", background_name, " Aftere cut(chi2>30) : ",cseriousHistL[6].Integral()
   print "chi2 >> Number of HSCP  Aftere cut(chi2>30) : ",seriousHistL[6].Integral()
+'''
   norm_mu = cseriousHistL[6].Integral()
   cseriousHistL[6].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[6].Draw("HIST")
@@ -501,7 +544,9 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[4],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"timeChi_pos"+str_form)
-
+'''
+  DrawCanvas(seriousHistL[6], ROOT.kBlue, "HSCP", cseriousHistL[6], ROOT.kRed, background_name, r'$\Chi^2$', 'Number of Particles', "timeChi_pos", True, -1.0, 0.06, 0.0, 0.0, 0.0, 0.0)
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[7].SetLineColor(ROOT.kRed)
@@ -511,8 +556,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[7].SetTitle('Angle between second and first chamber for positive propagation')
   cseriousHistL[7].SetLineStyle(2)
   seriousHistL[7].SetLineStyle(1)
-  print "dphi >> Number of ",background_name," : ", cseriousHistL[7].Integral()
-  print "dphi >> Number of HSCP : ", seriousHistL[7].Integral()
+'''
+  print "dphi >> Number of ",background_name," : ", cseriousHistL[7].Integral(28, 72)
+  print "dphi >> Number of HSCP : ", seriousHistL[7].Integral(28, 72)
+'''
   norm_mu = cseriousHistL[7].Integral()
   cseriousHistL[7].Scale(1./norm_mu)  # MG normalize to unity
   cseriousHistL[7].Draw("HIST")
@@ -531,7 +578,9 @@ def readLorentzVector(Pileup):
   line2 = ROOT.TLine(0.005,0,0.005,0.09)
   line2.Draw()
   c1.SaveAs(str_save+"dphi_pos_test2"+str_form)
-
+'''
+  DrawCanvas(seriousHistL[7], ROOT.kBlue, "HSCP", cseriousHistL[7], ROOT.kRed, background_name, r'$\delta\phi$', 'Number of Particles', "dphi_pos", True, -1.0, 0.17, 0.005, 0.0, 0.005, 0.09)
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[8].SetLineColor(ROOT.kRed)
@@ -541,8 +590,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[8].SetTitle('Angle between second and first chamber for positive propagation')
   cseriousHistL[8].SetLineStyle(2)
   seriousHistL[8].SetLineStyle(1)
-  print "deta >> Number of ",background_name," : ", cseriousHistL[8].Integral()
-  print "deta >> Number of HSCP : ", seriousHistL[8].Integral()
+'''
+  print "deta >> Number of ",background_name," : ", cseriousHistL[8].Integral(38, 62)
+  print "deta >> Number of HSCP : ", seriousHistL[8].Integral(38, 62)
+'''
   norm_mu = cseriousHistL[8].Integral()
   norm_hscp = seriousHistL[8].Integral()
   cseriousHistL[8].Scale(1./norm_mu)  # MG normalize to unity
@@ -564,8 +615,13 @@ def readLorentzVector(Pileup):
   line2.Draw()
 
   c1.SaveAs(str_save+"deta_pos"+str_form)
-
-  
+'''
+  if Pileup == False :
+    deta_Y2 = 0.17
+  else :
+    deta_Y2 = 0.03
+  DrawCanvas(seriousHistL[8], ROOT.kBlue, "HSCP", cseriousHistL[8], ROOT.kRed, background_name, r'$\delta\eta$', 'Number of Particles', "deta_pos", True, -1.0, deta_Y2, 0.05, 0.0, 0.05, deta_Y2)
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[9].SetLineColor(ROOT.kRed)
@@ -573,8 +629,10 @@ def readLorentzVector(Pileup):
   cseriousHistL[9].GetYaxis().SetTitle('Number of Particles')
   cseriousHistL[9].GetYaxis().SetTitleOffset(1.2)
   cseriousHistL[9].SetTitle('Npairs')
+'''
   print "Npairs >> Number of ",background_name," : ", cseriousHistL[9].Integral()
   print "Npairs >> Number of HSCP : ", seriousHistL[9].Integral()
+'''
   norm_mu = cseriousHistL[9].Integral()
   norm_hscp = seriousHistL[9].Integral()
   cseriousHistL[9].Scale(1./norm_mu)  # MG normalize to unity
@@ -590,8 +648,9 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[9],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"npairs"+str_form)
-
-
+'''
+  DrawCanvas(seriousHistL[9], ROOT.kBlue, "HSCP", cseriousHistL[9], ROOT.kRed, background_name, 'Number of pairs', 'Number of Particles', "npairs", True, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
   cseriousHistL[10].SetLineColor(ROOT.kRed)
@@ -612,16 +671,19 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[10],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"RE31"+str_form)
-
-
+'''
+  DrawCanvas(seriousHistL[10], ROOT.kBlue, "HSCP", cseriousHistL[10], ROOT.kRed, background_name, 'Distance to the center of chamber(m)', 'Number of Particles', "RE31", False, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+'''
   c1=ROOT.TCanvas()
   cseriousHistL[12].SetLineColor(ROOT.kRed)
   cseriousHistL[12].SetLineStyle(2)
   cseriousHistL[12].GetXaxis().SetTitle('dR between GE11 and RE31')
   cseriousHistL[12].GetYaxis().SetTitle('Number of Particles')
 #  cseriousHistL[12].SetTitle('Npairs')
+'''
   print "GEM11 >> Number of ",background_name,"after GEM11 cut : ", cseriousHistL[12].Integral()
   print "GEM11 >> Number of HSCP after GEM11 cut : ", seriousHistL[12].Integral()
+'''
   norm_mu = cseriousHistL[12].Integral()
   norm_hscp = seriousHistL[12].Integral()
   cseriousHistL[12].Scale(1./norm_mu)  # MG normalize to unity
@@ -639,15 +701,23 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[12],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"dR_GE11_RE31"+str_form)
-
+'''
+  if Pileup == False :
+    GE11_Y2 = 0.7
+  else :
+    GE11_Y2 = 0.28
+  DrawCanvas(seriousHistL[12], ROOT.kBlue, "HSCP", cseriousHistL[12], ROOT.kRed, background_name, 'dR between GE11 and RE31', 'Number of Particles', "dR_GE11_RE31", True, -1.0, GE11_Y2, 0.0, 0.0, 0.0, 0.0)
+'''
   c1=ROOT.TCanvas()
   cseriousHistL[13].SetLineColor(ROOT.kRed)
   cseriousHistL[13].SetLineStyle(2)
   cseriousHistL[13].GetXaxis().SetTitle('dR between GE21 and RE31')
   cseriousHistL[13].GetYaxis().SetTitle('Number of Particles')
 #  cseriousHistL[13].SetTitle('Npairs')
+'''
   print "GEM21 >> Number of ",background_name,"after GEM21 cut : ", cseriousHistL[13].Integral()
   print "GEM21 >> Number of HSCP after GEM21 cut : ", seriousHistL[13].Integral()
+'''
   norm_mu = cseriousHistL[13].Integral()
   norm_hscp = seriousHistL[13].Integral()
   cseriousHistL[13].Scale(1./norm_mu)  # MG normalize to unity
@@ -665,6 +735,13 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[13],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"dR_GE21_RE31"+str_form)
+'''
+  if Pileup == False :
+    GE21_Y2 = 0.6
+  else :
+    GE21_Y2 = 0.2
+  DrawCanvas(seriousHistL[13], ROOT.kBlue, "HSCP", cseriousHistL[13], ROOT.kRed, background_name, 'dR between GE21 and RE31', 'Number of Particles', "dR_GE21_RE31", True, -1.0, GE11_Y2, 0.0, 0.0, 0.0, 0.0)
+
 
   c1=ROOT.TCanvas()
   cseriousHistL[14].Draw("COLZ")
@@ -673,9 +750,7 @@ def readLorentzVector(Pileup):
   c1.SaveAs(str_save+"RECHAMBERS"+str_form)
 
 
-
-
-
+'''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0); 
   cseriousHistL[11].SetLineColor(ROOT.kRed)
@@ -696,9 +771,11 @@ def readLorentzVector(Pileup):
   legend.AddEntry(seriousHistL[11],"HSCP","l")
   legend.Draw()
   c1.SaveAs(str_save+"RE41"+str_form)
+'''
+  DrawCanvas(seriousHistL[11], ROOT.kBlue, "HSCP", cseriousHistL[11], ROOT.kRed, background_name, 'Distance to the center of chamber(m)', 'Number of Particles', "RE41", False, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
 
-  DrawCanvas( seriousHistL[16], ROOT.kBlue, "HSCP", cseriousHistL[16], ROOT.kRed, "Muons", "dR between rechit and simdigi1", "Entries", str_save+"dRsimdigi1"+str_form)
-  DrawCanvas( seriousHistL[17], ROOT.kBlue, "HSCP", cseriousHistL[17], ROOT.kRed, "Muons", "dR between rechit and simdigi2", "Entries", str_save+"dRsimdigi2"+str_form)
+  DrawCanvas( seriousHistL[16], ROOT.kBlue, "HSCP", cseriousHistL[16], ROOT.kRed, "Muons", "dR between rechit and simdigi1", "Entries", "dRsimdigi1", True, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
+  DrawCanvas( seriousHistL[17], ROOT.kBlue, "HSCP", cseriousHistL[17], ROOT.kRed, "Muons", "dR between rechit and simdigi2", "Entries", "dRsimdigi2", True, -1.0, -1.0, 0.0, 0.0, 0.0, 0.0)
 
   c1=ROOT.TCanvas()
   propHist=ROOT.TGraph( seriousHistL[5].GetNbinsX() )
@@ -764,6 +841,5 @@ def readLorentzVector(Pileup):
 
 
   
-Pileup = False
 readLorentzVector(Pileup)
 
