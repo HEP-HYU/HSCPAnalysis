@@ -7,7 +7,7 @@ from array import array
 from ROOT import gStyle
 #from rootpy.interactive import wait
 
-Pileup = True
+Pileup = False
 rndm = ROOT.TRandom(1)
 SpeedOfLight = 30
 
@@ -24,8 +24,8 @@ def readLorentzVector(Pileup):
   #str_save="plots/new/release/001/1599/"
   #str_save = "tmp/"
   #str_save="plot_HSCPLGW25_noise_BgPU0/"
-  str_save="plot_HSCPLGW25_noise_BgSNBMAPU200/"
-  #str_save = "plot_NOnoise_noPU/"
+  #str_save="plot_HSCPLGW25_noise_BgSNBPU200/"
+  str_save = "plot_HSCPnoPU_BgPU0/"
   #str_save="plots/new/Go"
   #str_save="plots/HSCP_old_NoPU/"
   #str_save="plots/910pre3/"
@@ -133,7 +133,7 @@ def readLorentzVector(Pileup):
   global HSCPmass
   HSCPmass = 0
 
-  def timePlots (chain,HistL,Min,Max, Pileup = True):
+  def timePlots (chain,HistL,Min,Max, Pileup = False):
     counter =0 
     counter_pre = 0
     counter_step1 = 0
@@ -481,7 +481,7 @@ def readLorentzVector(Pileup):
   c1.SaveAs(str_save+"timeDiff"+str_form)
   '''
   if Pileup == False :
-    timeDiff_Y2 = 0.56
+    timeDiff_Y2 = 0.60
   else :
     timeDiff_Y2 = 0.14
   DrawCanvas(seriousHistL[4], ROOT.kBlue, "HSCP", cseriousHistL[4], ROOT.kRed, background_name, 'Time delay difference', 'Number of Particles', "timeDiff", True, 0.0, timeDiff_Y2, -5.0, 0.0, -5.0, timeDiff_Y2)
@@ -545,7 +545,7 @@ def readLorentzVector(Pileup):
   legend.Draw()
   c1.SaveAs(str_save+"timeChi_pos"+str_form)
   '''
-  DrawCanvas(seriousHistL[6], ROOT.kBlue, "HSCP", cseriousHistL[6], ROOT.kRed, background_name, '\Chi^2', 'Number of Particles', "timeChi_pos", True, -1.0, 0.06, 0.0, 0.0, 0.0, 0.0)
+  DrawCanvas(seriousHistL[6], ROOT.kBlue, "HSCP", cseriousHistL[6], ROOT.kRed, background_name, '\Chi^2', 'Number of Particles', "timeChi_pos", True, -1.0, 0.2, 0.0, 0.0, 0.0, 0.0)
   '''
   c1=ROOT.TCanvas()
   gStyle.SetOptStat(0);
@@ -809,9 +809,10 @@ def readLorentzVector(Pileup):
 
 # MG end
 
-  propHist.SetTitle( 'Muons vs '+str(HSCPmass)+' HSCP kept')
+  #propHist.SetTitle( 'Muons vs '+str(HSCPmass)+' HSCP kept')
+  propHist.SetTitle('')
   propHist.Draw()
-  gStyle.SetOptStat(0);
+  gStyle.SetOptStat(0)
   propHist.GetXaxis().SetTitle('HSCP')
   propHist.GetXaxis().SetRangeUser(0.,1.)
   propHist.GetYaxis().SetTitle(background_name)
@@ -831,9 +832,11 @@ def readLorentzVector(Pileup):
   propHist_pos.Draw("SAMEPE")
 
 
-  legend = ROOT.TLegend(0.13,0.70,0.60,0.87)
+  legend = ROOT.TLegend(0.13,0.70,0.70,0.87)
   legend.AddEntry(propHist,"chi2 discri","p")
   legend.AddEntry(propHist_pos,"chi2 + (dT > -5 ns & |dphi| < 0.005 & |deta| < 0.05) & chi2 > 30","p")
+  legend.SetLineColor(0);
+  legend.SetFillColor(0);
   legend.Draw() 
 
   c1.SetLogy()
